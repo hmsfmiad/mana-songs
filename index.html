@@ -128,8 +128,17 @@
         padding: 6px;
       }
     }
+.type-col {
+    width: 8%;
+    white-space: nowrap;
+  }
+
 .bottom-space {
   height: 80px;
+}
+.sort-buttons {
+  display: inline-block;
+  margin-left: 6px;
 }
   </style>
 </head>
@@ -156,7 +165,12 @@
     </a>
   </p>
       <table id="songTableUtawaku">
-        <tr><th>配信日</th><th>曲名</th><th>with</th><th>リンク</th></tr>
+        <tr><th>
+    配信日
+    <button onclick="setSortOrder('desc')" style="font-size:0.8em; margin-left:4px;">↓</button>
+    <button onclick="setSortOrder('asc')" style="font-size:0.8em;">↑</button>
+  </th>
+<th>曲名</th><th>with</th><th>リンク</th><th>備考</th></tr>
       </table>
     </section>
 
@@ -164,7 +178,12 @@
 <section id="section-hoka" class="column" style="display:none;">
   <h2>その他</h2>
   <table id="songTableHoka">
-    <tr><th>投稿日</th><th>曲名</th><th>with</th><th>リンク</th><th>備考</th></tr>
+    <tr><th>
+    配信日
+    <button onclick="setSortOrder('desc')" style="font-size:0.8em; margin-left:4px;">↓</button>
+    <button onclick="setSortOrder('asc')" style="font-size:0.8em;">↑</button>
+  </th>
+<th>曲名</th><th>with</th><th>リンク</th><th>備考</th></tr>
   </table>
 </section>
 
@@ -177,7 +196,12 @@
     </a>
       </p>
       <table id="songTableVideo">
-        <tr><th>配信日</th><th>曲名</th><th>with</th><th>リンク</th></tr>
+        <tr><th>
+    配信日
+    <button onclick="setSortOrder('desc')" style="font-size:0.8em; margin-left:4px;">↓</button>
+    <button onclick="setSortOrder('asc')" style="font-size:0.8em;">↑</button>
+  </th>
+<th>曲名</th><th>with</th><th>リンク</th><th>備考</th></tr>
       </table>
     </section>
 
@@ -190,7 +214,12 @@
     </a>
       </p>
       <table id="songTableShort">
-        <tr><th>配信日</th><th>曲名</th><th>with</th><th>リンク</th></tr>
+        <tr><th>
+    配信日
+    <button onclick="setSortOrder('desc')" style="font-size:0.8em; margin-left:4px;">↓</button>
+    <button onclick="setSortOrder('asc')" style="font-size:0.8em;">↑</button>
+  </th>
+<th>曲名</th><th>with</th><th>リンク</th><th>備考</th></tr>
       </table>
     </section>
 
@@ -203,9 +232,27 @@
     </a>
      </p>
       <table id="songTableOrisong">
-        <tr><th>配信日</th><th>曲名</th><th>with</th><th>リンク</th></tr>
+        <tr><th>
+    配信日
+    <button onclick="setSortOrder('desc')" style="font-size:0.8em; margin-left:4px;">↓</button>
+    <button onclick="setSortOrder('asc')" style="font-size:0.8em;">↑</button>
+  </th>
+<th>曲名</th><th>with</th><th>リンク</th><th>備考</th></tr>
       </table>
     </section>
+<!-- 全曲表示カラム -->
+<section id="section-both" class="column" style="display:none;">
+  <h2 style="display:none;">全曲表示</h2>
+  <table id="songTableBoth">
+    <tr><th>
+    配信日
+    <button onclick="setSortOrder('desc')" style="font-size:0.8em; margin-left:4px;">↓</button>
+    <button onclick="setSortOrder('asc')" style="font-size:0.8em;">↑</button>
+  </th>
+<th>曲名</th><th>with</th><th>リンク</th><th>備考</th><th class="type-col">形式</th></tr>
+  </table>
+</section>
+
   </div>
 <div class="bottom-space"></div>
 
@@ -214,6 +261,10 @@
 
 <script>
   let allSongs = [];
+function getType(song) {
+  return song["type"]?.replace(/^\uFEFF/, "").trim();
+}
+let sortOrder = 'desc';
 
   const csvUrl = 'https://script.google.com/macros/s/AKfycbwQe8aNO1DtEEEcOQFJxE3KV7X39kpwltzJ2fhO3_BjRcri5dlF9z1P3kJRa2RKbQYrug/exec';
 
@@ -239,6 +290,7 @@ renderTableHoka(hokas, 'songTableHoka');
           renderTable(videos, 'songTableVideo');
           renderTable(shorts, 'songTableShort');
           renderTable(orisongs, 'songTableOrisong');
+          renderTableBoth(allSongs, 'songTableBoth');
         }
       });
     });
@@ -246,6 +298,12 @@ renderTableHoka(hokas, 'songTableHoka');
   function renderTable(songs, tableId) {
     const table = document.getElementById(tableId);
     while (table.rows.length > 1) table.deleteRow(1);
+
+songs.sort((a, b) => {
+  const dateA = new Date(a.date);
+  const dateB = new Date(b.date);
+  return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+});
 
     songs.forEach(song => {
       if (!song.title || !song.video_id) return;
@@ -269,14 +327,16 @@ renderTableHoka(hokas, 'songTableHoka');
       link.textContent = "▶ YouTubeで再生";
       linkCell.appendChild(link);
 
+const noteCell = row.insertCell();
+    noteCell.textContent = song.note?.trim() || "";
     });
   }
 
   function showOnly(type) {
-    const sections = ['utawaku', 'video', 'short', 'orisong', 'hoka'];
+    const sections = ['utawaku', 'video', 'short', 'orisong', 'hoka', 'both'];
     sections.forEach(id => {
       const el = document.getElementById(`section-${id}`);
-      if (el) el.style.display = (type === id || type === 'both') ? 'block' : 'none';
+      if (el) el.style.display = (type === id) ? 'block' : 'none';
     });
   }
 function renderTableHoka(songs, tableId) {
@@ -292,7 +352,14 @@ function renderTableHoka(songs, tableId) {
     grouped[url].push(song);
   });
 
-  Object.entries(grouped).forEach(([url, group]) => {
+const sortedUrls = Object.keys(grouped).sort((a, b) => {
+  const dateA = new Date(grouped[a][0].date);
+  const dateB = new Date(grouped[b][0].date);
+  return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+});
+
+  sortedUrls.forEach(url => {
+  const group = grouped[url];
     group.forEach((song, index) => {
       const row = table.insertRow();
 
@@ -307,7 +374,7 @@ function renderTableHoka(songs, tableId) {
         const link = document.createElement('a');
         link.href = url;
         link.target = "_blank";
-        link.textContent = "▶ ニコニコ動画で再生";
+        link.textContent = "▶ 再生";
         linkCell.appendChild(link);
 
         // 備考セル（rowspan）
@@ -317,4 +384,108 @@ function renderTableHoka(songs, tableId) {
       }
     });
   });
-}</script>
+}
+function renderTableBoth(allSongs, tableId) {
+  const table = document.getElementById(tableId);
+  while (table.rows.length > 1) table.deleteRow(1);
+
+  const flatSongs = allSongs.map(song => {
+    const type = song["type"]?.replace(/^\uFEFF/, "").trim();
+    const url = (type === "hoka") ? song.hoka_url?.trim() : `https://www.youtube.com/watch?v=${song.video_id?.trim()}${song.start ? `&t=${song.start}s` : ""}`;
+    const label = (type === "hoka") ? "▶ ニコニコで再生" : "▶ YouTubeで再生";
+    return {
+      date: song.date || "―",
+      title: song.title || "―",
+      with: song.with || "―",
+      url,
+      label,
+      note: song.note?.trim() || "―",
+      type: type || "―"
+    };
+  }).filter(song => song.title && song.url);
+
+  // 日付順にソート（降順）
+ flatSongs.sort((a, b) => {
+  const dateA = new Date(a.date);
+  const dateB = new Date(b.date);
+  return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+});
+
+const typeMap = {
+  utawaku: "配信",
+  video: "動画",
+  short: "short",
+  orisong: "オリ曲",
+  hoka: "その他"
+};
+
+
+  flatSongs.forEach(song => {
+    const row = table.insertRow();
+    row.insertCell().textContent = song.date;
+    row.insertCell().textContent = song.title;
+    row.insertCell().textContent = song.with;
+
+    const linkCell = row.insertCell();
+    const link = document.createElement('a');
+    link.href = song.url;
+    link.target = "_blank";
+    link.textContent = song.label;
+    linkCell.appendChild(link);
+
+    row.insertCell().textContent = song.note;
+    const typeLabel = typeMap[song.type] || song.type || "―";
+  row.insertCell().textContent = typeLabel;
+
+  });
+}
+document.addEventListener("DOMContentLoaded", function() {
+  showOnly('both');
+});
+function setSortOrder(order) {
+  sortOrder = order;
+
+  // 現在表示されているセクションを再描画
+  const sections = ['utawaku', 'video', 'short', 'orisong', 'hoka', 'both'];
+  sections.forEach(id => {
+    const el = document.getElementById(`section-${id}`);
+    if (el && el.style.display !== 'none') {
+      switch (id) {
+        case 'utawaku':
+          renderTable(
+            allSongs.filter(song => getType(song) === 'utawaku'),
+            'songTableUtawaku'
+          );
+          break;
+        case 'video':
+          renderTable(
+            allSongs.filter(song => getType(song) === 'video'),
+            'songTableVideo'
+          );
+          break;
+        case 'short':
+          renderTable(
+            allSongs.filter(song => getType(song) === 'short'),
+            'songTableShort'
+          );
+          break;
+        case 'orisong':
+          renderTable(
+            allSongs.filter(song => getType(song) === 'orisong'),
+            'songTableOrisong'
+          );
+          break;
+        case 'hoka':
+          renderTableHoka(
+            allSongs.filter(song => getType(song) === 'hoka'),
+            'songTableHoka'
+          );
+          break;
+        case 'both':
+          renderTableBoth(allSongs, 'songTableBoth');
+          break;
+      }
+    }
+  });
+}
+</script>
