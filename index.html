@@ -392,7 +392,7 @@ function renderTableBoth(allSongs, tableId) {
   const flatSongs = allSongs.map(song => {
     const type = song["type"]?.replace(/^\uFEFF/, "").trim();
     const url = (type === "hoka") ? song.hoka_url?.trim() : `https://www.youtube.com/watch?v=${song.video_id?.trim()}${song.start ? `&t=${song.start}s` : ""}`;
-    const label = (type === "hoka") ? "▶ ニコニコで再生" : "▶ YouTubeで再生";
+    const label = (type === "hoka") ? "▶ 再生" : "▶ YouTubeで再生";
     return {
       date: song.date || "―",
       title: song.title || "―",
