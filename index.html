@@ -287,7 +287,6 @@ let sortOrder = 'desc';
         dynamicTyping: true,
         complete: function(results) {
           allSongs = results.data;
-          const getType = song => song["type"]?.replace(/^\uFEFF/, "").trim();
 
           const utawakus = allSongs.filter(song => getType(song) === "utawaku");
           const videos = allSongs.filter(song => getType(song) === "video");
