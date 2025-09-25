@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>緋八マナ🐝🤣歌クローゼット</title>
-   <meta name="google-site-verification" content="QU5vV6Hid0b1BaeG-VQRiAIwMxraGHHfsovCMvG23hg" />
   <style>
     html, body {
       height: 100%;
@@ -129,7 +128,7 @@
         padding: 6px;
       }
     }
-    /*曲名列を広げる */
+/*曲名列を広げる */
 table td:nth-child(2),
 table th:nth-child(2) {
   width: 22%;}
@@ -138,10 +137,6 @@ table th:nth-child(2) {
 table td:nth-child(1),
 table th:nth-child(1) {
   width: 10%; }
-
-    table td:nth-child(4),
-table th:nth-child(4) {
-  width: 15%; }
 
 .type-col {
     width: 8%;
@@ -407,7 +402,7 @@ function renderTableBoth(allSongs, tableId) {
   const flatSongs = allSongs.map(song => {
     const type = song["type"]?.replace(/^\uFEFF/, "").trim();
     const url = (type === "hoka") ? song.hoka_url?.trim() : `https://www.youtube.com/watch?v=${song.video_id?.trim()}${song.start ? `&t=${song.start}s` : ""}`;
-    const label = (type === "hoka") ? "▶ 再生" : "▶ YouTubeで再生";
+    const label = (type === "hoka") ? "▶ ニコニコで再生" : "▶ YouTubeで再生";
     return {
       date: song.date || "―",
       title: song.title || "―",
