@@ -276,7 +276,7 @@ function getType(song) {
 }
 let sortOrder = 'desc';
 
-  const csvUrl = 'https://script.google.com/macros/s/AKfycbwQe8aNO1DtEEEcOQFJxE3KV7X39kpwltzJ2fhO3_BjRcri5dlF9z1P3kJRa2RKbQYrug/exec';
+  const csvUrl = 'https://script.google.com/macros/s/AKfycbwFyr_y6GpCW7dsJIA7XpZizJx71CFjHlHzEgVvEpywonkKrhFjY51NKI2sgwceLm6e/exec';
 
   fetch(csvUrl)
     .then(response => response.text())
@@ -286,6 +286,7 @@ let sortOrder = 'desc';
         skipEmptyLines: true,
         dynamicTyping: true,
         complete: function(results) {
+      console.log(results.data);
           allSongs = results.data;
 
           const utawakus = allSongs.filter(song => getType(song) === "utawaku");
