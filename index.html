@@ -150,6 +150,22 @@ table th:nth-child(1) {
   display: inline-block;
   margin-left: 6px;
 }
+
+.loading-message {
+  display: none;
+  text-align: center;
+  font-size: 1.4em;
+  font-family: 'Hiragino Maru Gothic ProN', 'Comic Sans MS', cursive;
+  color: #d85c8a;
+  margin: 20px 0;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+
+}
   </style>
 </head>
 <body>
@@ -262,9 +278,12 @@ table th:nth-child(1) {
 <th>曲名</th><th>with</th><th>リンク</th><th>備考</th><th class="type-col">形式</th></tr>
   </table>
 </section>
-
   </div>
 <div class="bottom-space"></div>
+
+<div id="loading" class="loading-message">
+  読み込み中...
+</div>
 
   <!-- PapaParse CDN -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -277,6 +296,9 @@ function getType(song) {
 let sortOrder = 'desc';
 
   const csvUrl = 'https://script.google.com/macros/s/AKfycbwFyr_y6GpCW7dsJIA7XpZizJx71CFjHlHzEgVvEpywonkKrhFjY51NKI2sgwceLm6e/exec';
+
+document.getElementById("loading").style.display = "block";
+
   fetch(csvUrl)
     .then(response => response.text())
     .then(csvText => {
@@ -285,6 +307,7 @@ let sortOrder = 'desc';
         skipEmptyLines: true,
         dynamicTyping: true,
         complete: function(results) {
+document.getElementById("loading").style.display = "none";
       console.log(results.data);
           allSongs = results.data;
 
