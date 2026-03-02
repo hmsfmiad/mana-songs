@@ -362,11 +362,11 @@ songs.sort((a, b) => {
       const linkCell = row.insertCell();
       const videoId = song.video_id.trim();
       const startTime = song.start ? `&t=${song.start}s` : "";
-const link = document.createElement('a');
-link.href = `https://www.youtube.com/watch?v=${videoId}${startTime}`;
-link.target = "_blank";
-link.textContent = "▶ YouTubeで再生";
-linkCell.appendChild(link);
+      const link = document.createElement('a');
+      link.href = `https://www.youtube.com/watch?v=${videoId}${startTime}`;
+      link.target = "_blank";
+      link.textContent = "▶ YouTubeで再生";
+      linkCell.appendChild(link);
 
 const noteCell = row.insertCell();
     noteCell.textContent = song.note?.trim() || "";
@@ -412,11 +412,11 @@ const sortedUrls = Object.keys(grouped).sort((a, b) => {
       if (index === 0) {
         const linkCell = row.insertCell();
         linkCell.rowSpan = group.length;
-       const link = document.createElement('a');
-link.href = url;
-link.target = "_blank";
-link.textContent = "▶ 再生";
-linkCell.appendChild(link);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = "_blank";
+        link.textContent = "▶ 再生";
+        linkCell.appendChild(link);
 
         // 備考セル（rowspan）
         const noteCell = row.insertCell();
@@ -467,11 +467,12 @@ const typeMap = {
     row.insertCell().textContent = song.title;
     row.insertCell().textContent = song.with;
 
-const link = document.createElement('a');
-link.href = song.url;
-link.target = "_blank";
-link.textContent = song.label;
-linkCell.appendChild(link);
+    const linkCell = row.insertCell();
+    const link = document.createElement('a');
+    link.href = song.url;
+    link.target = "_blank";
+    link.textContent = song.label;
+    linkCell.appendChild(link);
 
     row.insertCell().textContent = song.note;
     const typeLabel = typeMap[song.type] || song.type || "―";
