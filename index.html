@@ -494,15 +494,12 @@ const typeMap = {
     row.insertCell().textContent = song.title;
     row.insertCell().textContent = song.with;
 
-    const linkCell = row.insertCell();
-   const videoId = song.video_id?.trim();
-const hokaUrl = song.hoka_url?.trim();
-
+const linkCell = row.insertCell();
 const link = document.createElement('a');
 link.textContent = song.label;
 
-// ★ 両方空なら無効化
-if (!videoId && !hokaUrl) {
+// ★ song.url が空なら無効化
+if (!song.url || song.url.trim() === "") {
   link.classList.add("disabled-link");
 } else {
   link.href = song.url;
