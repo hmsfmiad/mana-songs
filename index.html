@@ -174,6 +174,13 @@ table th:nth-child(1) {
   100% { opacity: 1; transform: translateY(0); }
 
 }
+ .disabled-link {
+  pointer-events: none;
+  color: #aaa !important;
+  text-decoration: none;
+  cursor: default;
+  opacity: 0.6;
+}   
   </style>
 </head>
 <body>
@@ -362,11 +369,21 @@ songs.sort((a, b) => {
       const linkCell = row.insertCell();
       const videoId = song.video_id.trim();
       const startTime = song.start ? `&t=${song.start}s` : "";
-      const link = document.createElement('a');
-      link.href = `https://www.youtube.com/watch?v=${videoId}${startTime}`;
-      link.target = "_blank";
-      link.textContent = "▶ YouTubeで再生";
-      linkCell.appendChild(link);
+const videoId = song.video_id?.trim();
+const hokaUrl = song.hoka_url?.trim(); // hoka 以外は undefined
+
+const link = document.createElement('a');
+link.textContent = "▶ YouTubeで再生";
+
+// ★ video_id と hoka_url が両方空なら無効化
+if (!videoId && !hokaUrl) {
+  link.classList.add("disabled-link");
+} else {
+  link.href = `https://www.youtube.com/watch?v=${videoId}${startTime}`;
+  link.target = "_blank";
+}
+
+linkCell.appendChild(link);
 
 const noteCell = row.insertCell();
     noteCell.textContent = song.note?.trim() || "";
@@ -412,11 +429,21 @@ const sortedUrls = Object.keys(grouped).sort((a, b) => {
       if (index === 0) {
         const linkCell = row.insertCell();
         linkCell.rowSpan = group.length;
-        const link = document.createElement('a');
-        link.href = url;
-        link.target = "_blank";
-        link.textContent = "▶ 再生";
-        linkCell.appendChild(link);
+       const url = song.hoka_url?.trim();
+const videoId = song.video_id?.trim();
+
+const link = document.createElement('a');
+link.textContent = "▶ 再生";
+
+// ★ 両方空なら無効化
+if (!url && !videoId) {
+  link.classList.add("disabled-link");
+} else {
+  link.href = url;
+  link.target = "_blank";
+}
+
+linkCell.appendChild(link);
 
         // 備考セル（rowspan）
         const noteCell = row.insertCell();
@@ -468,11 +495,21 @@ const typeMap = {
     row.insertCell().textContent = song.with;
 
     const linkCell = row.insertCell();
-    const link = document.createElement('a');
-    link.href = song.url;
-    link.target = "_blank";
-    link.textContent = song.label;
-    linkCell.appendChild(link);
+   const videoId = song.video_id?.trim();
+const hokaUrl = song.hoka_url?.trim();
+
+const link = document.createElement('a');
+link.textContent = song.label;
+
+// ★ 両方空なら無効化
+if (!videoId && !hokaUrl) {
+  link.classList.add("disabled-link");
+} else {
+  link.href = song.url;
+  link.target = "_blank";
+}
+
+linkCell.appendChild(link);
 
     row.insertCell().textContent = song.note;
     const typeLabel = typeMap[song.type] || song.type || "―";
